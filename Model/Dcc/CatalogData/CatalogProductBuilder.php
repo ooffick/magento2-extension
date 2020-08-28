@@ -229,7 +229,11 @@ class CatalogProductBuilder implements CatalogProductBuilderInterface
         if ($product->getTypeId() == Configurable::TYPE_CODE
             && $this->configProvider->isFamiliesInheritEnabled($product->getStoreId())
         ) {
-            $childProducts = $product->getTypeInstance()->getUsedProducts($product, [static::EAN, static::ISBN, static::UPC, static::MPN]);
+	    $required_ids = [static::EAN, static::ISBN, static::UPC, static::MPN];
+	    sort($required_ids);
+            $required_ids = implode('', $required_ids);
+
+            $childProducts = $product->getTypeInstance()->getUsedProducts($product,$required_ids);
             foreach ($childProducts as $childProduct) {
                 $value = array_merge((array) $value, (array) $this->getCustomAttributeData($childProduct, $attributeCode));
             }
